@@ -16,6 +16,8 @@ namespace API.Models
         public int Salary { get; set; }
         public string Email { get; set; }
         public Gender Gender { get; set; }
+
+        public virtual Account Account { get; set; }
        
     }
 
