@@ -16,27 +16,23 @@ namespace API.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Account>()
-                .HasOne(a => a.Employee)
-                .WithOne(e => e.Account)
+            modelBuilder.Entity<Employee>()
+                .HasOne(e => e.Account)
+                .WithOne(a => a.Employee)
                 .HasForeignKey<Account>(a => a.NIK);
 
-            modelBuilder.Entity<Profiling>()
-                .HasOne(p => p.Account)
-                .WithOne(a => a.Profiling)
+            modelBuilder.Entity<Account>()
+                .HasOne(a => a.Profiling)
+                .WithOne(p => p.Account)
                 .HasForeignKey<Profiling>(p => p.NIK);
 
             modelBuilder.Entity<Profiling>()
                 .HasOne(p => p.Education)
-                .WithMany(ed => ed.Profilings)
-                .HasForeignKey(p => p.Education_Id) 
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithMany(ed => ed.Profilings);
 
             modelBuilder.Entity<Education>()
                 .HasOne(ed => ed.University)
-                .WithMany(u => u.Educations)
-                .OnDelete(DeleteBehavior.Cascade);
-
+                .WithMany(u => u.Educations);
         }
     }
 }

@@ -10,9 +10,11 @@ namespace API.Models
         [Key]
         public int Id { get; set; }
         public string GPA { get; set; }
-        public int University_Id { get; set; }
-
         public virtual University University { get; set; }  
         public ICollection<Profiling> Profilings { get; set; }
+
+
+        [ForeignKey("University")]
+        public int University_Id { get; set; }
     }
 }

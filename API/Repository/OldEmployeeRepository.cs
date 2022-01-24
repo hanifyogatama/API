@@ -10,12 +10,12 @@ using System.Text.RegularExpressions;
 
 namespace API.Repository
 {
-    public class EmployeeRepository : IEmployeeRepository
+    public class OldEmployeeRepository : IEmployeeRepository
     {
 
         private readonly MyContext context;
 
-        public EmployeeRepository(MyContext context)
+        public OldEmployeeRepository(MyContext context)
         {
             this.context = context;
         }
@@ -107,9 +107,9 @@ namespace API.Repository
             }
         }
 
+
         public int Update(Employee employee)
         {
-           
             string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" + 
                 @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
             var regex = new Regex(pattern, RegexOptions.IgnoreCase);

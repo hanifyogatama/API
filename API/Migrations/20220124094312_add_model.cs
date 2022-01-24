@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class add_Account_Education_Profiling_University_Model : Migration
+    public partial class add_model : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -31,7 +31,7 @@ namespace API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -63,15 +63,14 @@ namespace API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GPA = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    University_Id = table.Column<int>(type: "int", nullable: false),
-                    UniversityId = table.Column<int>(type: "int", nullable: true)
+                    University_Id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TB_M_Education", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TB_M_Education_TB_M_University_UniversityId",
-                        column: x => x.UniversityId,
+                        name: "FK_TB_M_Education_TB_M_University_University_Id",
+                        column: x => x.University_Id,
                         principalTable: "TB_M_University",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -82,7 +81,8 @@ namespace API.Migrations
                 columns: table => new
                 {
                     NIK = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Education_Id = table.Column<int>(type: "int", nullable: false)
+                    Education_Id = table.Column<int>(type: "int", nullable: false),
+                    EducationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -94,22 +94,22 @@ namespace API.Migrations
                         principalColumn: "NIK",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TB_M_Profiling_TB_M_Education_Education_Id",
-                        column: x => x.Education_Id,
+                        name: "FK_TB_M_Profiling_TB_M_Education_EducationId",
+                        column: x => x.EducationId,
                         principalTable: "TB_M_Education",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TB_M_Education_UniversityId",
+                name: "IX_TB_M_Education_University_Id",
                 table: "TB_M_Education",
-                column: "UniversityId");
+                column: "University_Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TB_M_Profiling_Education_Id",
+                name: "IX_TB_M_Profiling_EducationId",
                 table: "TB_M_Profiling",
-                column: "Education_Id");
+                column: "EducationId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
