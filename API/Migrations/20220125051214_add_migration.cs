@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class add_model : Migration
+    public partial class add_migration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -62,6 +62,7 @@ namespace API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Degree = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GPA = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     University_Id = table.Column<int>(type: "int", nullable: false)
                 },
@@ -81,8 +82,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     NIK = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Education_Id = table.Column<int>(type: "int", nullable: false),
-                    EducationId = table.Column<int>(type: "int", nullable: true)
+                    Education_Id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,11 +94,11 @@ namespace API.Migrations
                         principalColumn: "NIK",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TB_M_Profiling_TB_M_Education_EducationId",
-                        column: x => x.EducationId,
+                        name: "FK_TB_M_Profiling_TB_M_Education_Education_Id",
+                        column: x => x.Education_Id,
                         principalTable: "TB_M_Education",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -107,9 +107,9 @@ namespace API.Migrations
                 column: "University_Id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TB_M_Profiling_EducationId",
+                name: "IX_TB_M_Profiling_Education_Id",
                 table: "TB_M_Profiling",
-                column: "EducationId");
+                column: "Education_Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -9,12 +9,13 @@ namespace API.Models
     {
         [Key]
         public int Id { get; set; }
+        public string Degree { get; set; }
         public string GPA { get; set; }
         public virtual University University { get; set; }  
         public ICollection<Profiling> Profilings { get; set; }
 
 
-        [ForeignKey("University")]
+        [ForeignKey("University_Id")]
         public int University_Id { get; set; }
     }
 }

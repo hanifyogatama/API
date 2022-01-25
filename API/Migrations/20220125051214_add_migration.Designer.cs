@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20220124094312_add_model")]
-    partial class add_model
+    [Migration("20220125051214_add_migration")]
+    partial class add_migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,6 +40,9 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Degree")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GPA")
                         .HasColumnType("nvarchar(max)");
@@ -90,15 +93,12 @@ namespace API.Migrations
                     b.Property<string>("NIK")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("EducationId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Education_Id")
                         .HasColumnType("int");
 
                     b.HasKey("NIK");
 
-                    b.HasIndex("EducationId");
+                    b.HasIndex("Education_Id");
 
                     b.ToTable("TB_M_Profiling");
                 });
@@ -144,7 +144,9 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.Education", "Education")
                         .WithMany("Profilings")
-                        .HasForeignKey("EducationId");
+                        .HasForeignKey("Education_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("API.Models.Account", "Account")
                         .WithOne("Profiling")

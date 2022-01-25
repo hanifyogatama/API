@@ -50,6 +50,7 @@ namespace API.Repository
         public Entity Get(Key key)
         {
             return entities.Find(key);
+           
         }
 
         public int Insert(Entity entity)

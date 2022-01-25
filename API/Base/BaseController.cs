@@ -14,10 +14,10 @@ namespace API.Base
         where Repository : IRepository<Entity, Key>
     {
         private readonly Repository repository;
-        
+
         public BaseController(Repository repository)
         {
-            this.repository = repository;   
+            this.repository = repository;
         }
 
         [HttpGet]
@@ -49,24 +49,19 @@ namespace API.Base
         }
 
         [HttpGet("{key}")]
-        
-        public ActionResult<Entity> Get()
+        public ActionResult<Entity> Get(Key key)
         {
-         
-                var result = repository.Get(key);
+             var result = repository.Get(key);
 
-                if (result != null)
-                {
-                    return StatusCode(200, new { status = HttpStatusCode.OK, result, message = "showing record" });
-                }
-                else
-                {
-                    return StatusCode(404, new { status = HttpStatusCode.NotFound, result, message = "record not found" });
-                }
-            
+             if (result != null)
+             {
+                 return StatusCode(200, new { status = HttpStatusCode.OK, result, message = "showing record" });
+             }
+             else
+             {
+                 return StatusCode(404, new { status = HttpStatusCode.NotFound, result, message = "record not found" });
+             }
         }
-
-        
 
         [HttpPut]
         public ActionResult Update(Entity entity)
@@ -82,6 +77,7 @@ namespace API.Base
                     return StatusCode(500, new { status = HttpStatusCode.InternalServerError, message = "internal server error" });
             }
         }
+
 
         [HttpDelete("{Key}")]
         public ActionResult<Entity> Delete(Key key)
