@@ -2,6 +2,7 @@
 using API.Models;
 using API.ViewModel;
 using System;
+using System.Collections;
 using System.Linq;
 
 namespace API.Repository.Data
@@ -94,20 +95,27 @@ namespace API.Repository.Data
                 }
                 else
                 {
-                    return 4; // phone is exist
+                    return 4;
                 }
             }
             else if(emailExist == true && phoneExist == true)
             {
-                return 5; // email and phone is exist
+                return 5;
             }
             else
             {
-                return 6; // email is exist
+                return 6;
             }
 
             var result = myContext.SaveChanges();   
-            return result;
+            if(result > 0)
+            {
+                return 7;
+            }
+            else
+            {
+                return 8;
+            }
         }
 
 
@@ -136,5 +144,28 @@ namespace API.Repository.Data
                 return false;
             }
         }
+
+        public IEnumerable GetRegisteredData()
+        {
+            var result = from emp in myContext.Employees
+                         join acc in myContext.Accounts on emp.NIK equals acc.NIK
+                         join pro in myContext.Profilings on acc.NIK equals pro.NIK
+                         join edu in myContext.Educations on pro.Id equals edu.Id
+                         join univ in myContext.Universities on edu.University_Id equals univ.Id
+                         select new
+                         {
+                             NIK = emp.NIK,
+                             FullName = emp.FirstName + " " + emp.LastName,
+                             Phone = emp.Phone,
+                             Birthdate = emp.BirthDate,
+                             Salary = emp.Salary,
+                             Email = emp.Email,
+                             Degree = edu.Degree,
+                             GPA = edu.GPA,
+                             UnivName = univ.Name
+                         };
+            return result;
+        }
+
     }
 }

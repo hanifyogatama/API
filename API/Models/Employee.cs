@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace API.Models    
 {
@@ -17,6 +18,7 @@ namespace API.Models
         public string Email { get; set; }
         public Gender Gender { get; set; }
 
+        [JsonIgnore]
         public virtual Account Account { get; set; }
        
     }

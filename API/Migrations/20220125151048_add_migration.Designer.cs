@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20220125051214_add_migration")]
+    [Migration("20220125151048_add_migration")]
     partial class add_migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,12 +47,15 @@ namespace API.Migrations
                     b.Property<string>("GPA")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UniversityId")
+                        .HasColumnType("int");
+
                     b.Property<int>("University_Id")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("University_Id");
+                    b.HasIndex("UniversityId");
 
                     b.ToTable("TB_M_Education");
                 });
@@ -93,12 +96,12 @@ namespace API.Migrations
                     b.Property<string>("NIK")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Education_Id")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.HasKey("NIK");
 
-                    b.HasIndex("Education_Id");
+                    b.HasIndex("Id");
 
                     b.ToTable("TB_M_Profiling");
                 });
@@ -133,9 +136,7 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.University", "University")
                         .WithMany("Educations")
-                        .HasForeignKey("University_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UniversityId");
 
                     b.Navigation("University");
                 });
@@ -144,7 +145,7 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.Education", "Education")
                         .WithMany("Profilings")
-                        .HasForeignKey("Education_Id")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

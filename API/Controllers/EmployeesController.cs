@@ -23,31 +23,40 @@ namespace API.Controllers
         public ActionResult<RegisterVM> Post(RegisterVM registerVM)
         {
             var result = employeeRepository.Register(registerVM);
-
-            if (result != 0)
+            switch(result)
             {
-                if (result == 4)
-                {
-                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "phone is exist" });
-                }
-                else if (result == 5)
-                {
-                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "email and phone are exist" });
-                }
-                else if (result == 6)
-                {
-                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "email is exist" });
-                }
-                else
-                {
-                    return StatusCode(200, new { status = HttpStatusCode.OK, message = "data has been added" });
-                }
+                case 4:
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "Phone is exist" });
+                case 5:
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "Email and phone are exist" });
+                case 6:
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "Email is exist" });
+                case 7:
+                    return StatusCode(200, new { status = HttpStatusCode.OK, message = "Data has been added" });
+                case 8:
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "Data cannot added" });
+                default:
+                    return StatusCode(500, new { status = HttpStatusCode.InternalServerError, message = "Internal server error" });
+            }
+            
+        }
+
+
+        [Route("{registeredData}")]
+        //[HttpGet]
+        public ActionResult GetRegisteredData()
+        {
+            var result = employeeRepository.GetRegisteredData();
+            if (result != null)
+            {
+                return StatusCode(200, new { status = HttpStatusCode.OK, message = "Data has been added" });
             }
             else
             {
-                return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "data failed to added" });
+                return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "Record is empty" });
             }
         }
+
     }
 }
 

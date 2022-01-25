@@ -64,17 +64,18 @@ namespace API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Degree = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GPA = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UniversityId = table.Column<int>(type: "int", nullable: true),
                     University_Id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TB_M_Education", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TB_M_Education_TB_M_University_University_Id",
-                        column: x => x.University_Id,
+                        name: "FK_TB_M_Education_TB_M_University_UniversityId",
+                        column: x => x.UniversityId,
                         principalTable: "TB_M_University",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,7 +83,7 @@ namespace API.Migrations
                 columns: table => new
                 {
                     NIK = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Education_Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,22 +95,22 @@ namespace API.Migrations
                         principalColumn: "NIK",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_TB_M_Profiling_TB_M_Education_Education_Id",
-                        column: x => x.Education_Id,
+                        name: "FK_TB_M_Profiling_TB_M_Education_Id",
+                        column: x => x.Id,
                         principalTable: "TB_M_Education",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TB_M_Education_University_Id",
+                name: "IX_TB_M_Education_UniversityId",
                 table: "TB_M_Education",
-                column: "University_Id");
+                column: "UniversityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TB_M_Profiling_Education_Id",
+                name: "IX_TB_M_Profiling_Id",
                 table: "TB_M_Profiling",
-                column: "Education_Id");
+                column: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
