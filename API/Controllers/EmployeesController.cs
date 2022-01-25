@@ -24,11 +24,6 @@ namespace API.Controllers
         {
             var result = employeeRepository.Register(registerVM);
 
-            switch(result)
-            {
-
-            }
-
             if (result != 0)
             {
                 if (result == 4)

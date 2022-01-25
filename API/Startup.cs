@@ -33,7 +33,7 @@ namespace API
             services.AddScoped<EmployeeRepository>();
             services.AddScoped<UniversityRepository>();
             services.AddDbContext<MyContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("APIContext")));
+            options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("APIContext")));
             
         }
 
