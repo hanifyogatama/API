@@ -3,6 +3,7 @@ using API.Models;
 using API.ViewModel;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace API.Repository.Data
@@ -95,27 +96,20 @@ namespace API.Repository.Data
                 }
                 else
                 {
-                    return 4;
+                    return 5;
                 }
             }
             else if(emailExist == true && phoneExist == true)
             {
-                return 5;
-            }
-            else
-            {
                 return 6;
             }
-
-            var result = myContext.SaveChanges();   
-            if(result > 0)
-            {
-                return 7;
-            }
             else
             {
-                return 8;
+                return 4;
             }
+
+            var result = myContext.SaveChanges();
+            return result;
         }
 
 
@@ -147,7 +141,9 @@ namespace API.Repository.Data
 
         public IEnumerable GetRegisteredData()
         {
-            var result = from emp in myContext.Employees
+            List<string> listData = new List<string>();
+
+            var result = (from emp in myContext.Employees
                          join acc in myContext.Accounts on emp.NIK equals acc.NIK
                          join pro in myContext.Profilings on acc.NIK equals pro.NIK
                          join edu in myContext.Educations on pro.Id equals edu.Id
@@ -163,9 +159,23 @@ namespace API.Repository.Data
                              Degree = edu.Degree,
                              GPA = edu.GPA,
                              UnivName = univ.Name
-                         };
-            return result;
-        }
+                         });
 
+
+            foreach(var rr in result) 
+            {
+                  listData.Add(rr.NIK);
+                listData.Add(rr.FullName);
+                listData.Add(rr.Phone);
+                listData.Add(Convert.ToString(rr.Birthdate));
+                listData.Add(Convert.ToString(rr.Salary));
+                listData.Add(rr.Email);
+                listData.Add(rr.Degree);
+                listData.Add(rr.GPA);
+                listData.Add(rr.UnivName);
+            }
+
+            return listData;
+        }
     }
 }
