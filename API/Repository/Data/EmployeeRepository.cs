@@ -85,6 +85,7 @@ namespace API.Repository.Data
                     };
                     myContext.Accounts.Add(acc);
 
+
                     Education edu = new Education
                     {
                         // Id = GetID(),
@@ -93,6 +94,16 @@ namespace API.Repository.Data
                         University_Id = registerVM.University_Id
                     };
                     myContext.Educations.Add(edu);
+                    myContext.SaveChanges();    
+
+
+                    Profiling prof = new Profiling
+                    {
+                        NIK = employ.NIK,
+                        Id = edu.Id
+                    };
+                    myContext.Profilings.Add(prof);
+
                 }
                 else
                 {
@@ -141,7 +152,6 @@ namespace API.Repository.Data
 
         public IEnumerable GetRegisteredData()
         {
-            List<string> listData = new List<string>();
 
             var result = (from emp in myContext.Employees
                          join acc in myContext.Accounts on emp.NIK equals acc.NIK
@@ -159,23 +169,9 @@ namespace API.Repository.Data
                              Degree = edu.Degree,
                              GPA = edu.GPA,
                              UnivName = univ.Name
-                         });
+                         }).ToList();
 
-
-            foreach(var rr in result) 
-            {
-                  listData.Add(rr.NIK);
-                listData.Add(rr.FullName);
-                listData.Add(rr.Phone);
-                listData.Add(Convert.ToString(rr.Birthdate));
-                listData.Add(Convert.ToString(rr.Salary));
-                listData.Add(rr.Email);
-                listData.Add(rr.Degree);
-                listData.Add(rr.GPA);
-                listData.Add(rr.UnivName);
-            }
-
-            return listData;
+            return result;
         }
     }
 }

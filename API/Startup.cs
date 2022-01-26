@@ -32,8 +32,16 @@ namespace API
             services.AddControllers();
             services.AddScoped<EmployeeRepository>();
             services.AddScoped<UniversityRepository>();
+            
+            // Dependency Injection
+            // services.AddControllersWithViews();
+
             services.AddDbContext<MyContext>(options =>
             options.UseLazyLoadingProxies().UseSqlServer(Configuration.GetConnectionString("APIContext")));
+
+            services.AddControllersWithViews()
+            .AddNewtonsoftJson(options =>
+            options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             
         }
 
@@ -46,6 +54,9 @@ namespace API
             }
 
             app.UseHttpsRedirection();
+
+            // dependency injection
+            // app.UseStaticFiles();
 
             app.UseRouting();
 

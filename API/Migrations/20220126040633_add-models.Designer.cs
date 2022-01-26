@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20220125151048_add_migration")]
-    partial class add_migration
+    [Migration("20220126040633_add-models")]
+    partial class addmodels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,15 +47,12 @@ namespace API.Migrations
                     b.Property<string>("GPA")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UniversityId")
-                        .HasColumnType("int");
-
                     b.Property<int>("University_Id")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UniversityId");
+                    b.HasIndex("University_Id");
 
                     b.ToTable("TB_M_Education");
                 });
@@ -136,7 +133,9 @@ namespace API.Migrations
                 {
                     b.HasOne("API.Models.University", "University")
                         .WithMany("Educations")
-                        .HasForeignKey("UniversityId");
+                        .HasForeignKey("University_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("University");
                 });

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class add_migration : Migration
+    public partial class addmodels : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -64,18 +64,17 @@ namespace API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Degree = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GPA = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UniversityId = table.Column<int>(type: "int", nullable: true),
                     University_Id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TB_M_Education", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TB_M_Education_TB_M_University_UniversityId",
-                        column: x => x.UniversityId,
+                        name: "FK_TB_M_Education_TB_M_University_University_Id",
+                        column: x => x.University_Id,
                         principalTable: "TB_M_University",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,9 +102,9 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_TB_M_Education_UniversityId",
+                name: "IX_TB_M_Education_University_Id",
                 table: "TB_M_Education",
-                column: "UniversityId");
+                column: "University_Id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TB_M_Profiling_Id",

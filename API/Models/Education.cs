@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace API.Models
 {
@@ -20,7 +20,7 @@ namespace API.Models
         public virtual ICollection<Profiling> Profilings { get; set; }
 
 
-        [ForeignKey("University_Id")]
+        [ForeignKey("University")]
         public int University_Id { get; set; }
     }
 }
