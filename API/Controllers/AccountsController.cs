@@ -22,12 +22,18 @@ namespace API.Controllers
         [HttpPost("Login")]
         public ActionResult<LoginVM> Post(LoginVM loginVM)
         {
+            Account account = new Account();
+
             var login = accountRepository.Login(loginVM.Email, loginVM.Password);
             if(login != 0)
             {
                 if(login == 1)
                 {
-                    return StatusCode(200, new { status = HttpStatusCode.OK, message = "login succesfully" });
+                    // return StatusCode(200, new { status = HttpStatusCode.OK, message = "login succesfully" });
+                    // var NIK = (from Account.ToList() where emp.Email == inputEmail select emp.NIK).Single();
+                    var getProfile = accountRepository.GetProfile(loginVM.Email);
+                    return Ok(getProfile);
+                    // return RedirectToAction("Action", new { GetProfile(loginVM.Email) });
                 }
                 else if(login == 2)
                 {
