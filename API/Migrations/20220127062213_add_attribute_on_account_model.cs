@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class addmodels : Migration
+    public partial class add_attribute_on_account_model : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -43,7 +43,10 @@ namespace API.Migrations
                 columns: table => new
                 {
                     NIK = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OTP = table.Column<int>(type: "int", nullable: false),
+                    ExpiredToken = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    isUsed = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

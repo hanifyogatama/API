@@ -22,24 +22,23 @@ namespace API.Controllers
         [HttpPost("Login")]
         public ActionResult<LoginVM> Post(LoginVM loginVM)
         {
-            Account account = new Account();
-
             var login = accountRepository.Login(loginVM.Email, loginVM.Password);
             if(login != 0)
             {
                 if(login == 1)
                 {
-                    // return StatusCode(200, new { status = HttpStatusCode.OK, message = "login succesfully" });
-                    // var NIK = (from Account.ToList() where emp.Email == inputEmail select emp.NIK).Single();
-                    var getProfile = accountRepository.GetProfile(loginVM.Email);
-                    return Ok(getProfile);
-                    // return RedirectToAction("Action", new { GetProfile(loginVM.Email) });
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "account not registered" });
                 }
                 else if(login == 2)
                 {
-                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "wrong password" });
+                    var getProfile = accountRepository.GetProfile(loginVM.Email);
+                    return Ok(getProfile);
                 }
                 else if (login == 3)
+                {
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "wrong password" });
+                }
+                else if (login == 4)
                 {
                     return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "wrong email" });
                 }
@@ -51,6 +50,31 @@ namespace API.Controllers
             else
             {
                 return StatusCode(505, new { status = HttpStatusCode.NotFound, message = "not found" });
+            }
+        }
+
+        [HttpPost("ForgetPassword")]
+        public ActionResult<ForgetPasswordMV> Post(ForgetPasswordMV forgetPasswordMV)
+        {
+            var forgotPassword = accountRepository.ForgotPassword(forgetPasswordMV.Email);
+            if (forgotPassword != 0)
+            {
+                if (forgotPassword == 2)
+                {
+                    return StatusCode(200, new { status = HttpStatusCode.OK, message = "email sent" });
+                }
+                else if (forgotPassword == 3)
+                {
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "email cannot send" });
+                }
+                else
+                {
+                    return StatusCode(505, new { status = HttpStatusCode.NotFound, message = "not found" });
+                }
+            }
+            else
+            {
+                return StatusCode(500, new { status = HttpStatusCode.InternalServerError, message = "internal server error" });
             }
         }
     }

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20220126040633_add-models")]
-    partial class addmodels
+    [Migration("20220127062213_add_attribute_on_account_model")]
+    partial class add_attribute_on_account_model
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,8 +26,17 @@ namespace API.Migrations
                     b.Property<string>("NIK")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("ExpiredToken")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OTP")
+                        .HasColumnType("int");
+
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isUsed")
+                        .HasColumnType("bit");
 
                     b.HasKey("NIK");
 

@@ -24,8 +24,17 @@ namespace API.Migrations
                     b.Property<string>("NIK")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("ExpiredToken")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OTP")
+                        .HasColumnType("int");
+
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isUsed")
+                        .HasColumnType("bit");
 
                     b.HasKey("NIK");
 
