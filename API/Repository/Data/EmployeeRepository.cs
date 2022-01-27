@@ -5,6 +5,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+
 
 namespace API.Repository.Data
 {
@@ -56,12 +58,14 @@ namespace API.Repository.Data
             return newId;
         }
 
-
         public int Register(RegisterVM registerVM)
         {
             var emailExist = IsEmailExist(registerVM);
             var phoneExist = IsPhoneExist(registerVM);
-            if(emailExist == false)
+            // var emailFormat = HasFormatEmail(registerVM);   
+            
+
+            if (emailExist == false)
             {
                 if (phoneExist == false)
                 {
@@ -81,21 +85,19 @@ namespace API.Repository.Data
                     Account acc = new Account
                     {
                         NIK = employ.NIK,
-                        Password = registerVM.Password
+                        Password = BCrypt.Net.BCrypt.HashPassword(registerVM.Password)
                     };
                     myContext.Accounts.Add(acc);
 
-
                     Education edu = new Education
                     {
-                        // Id = GetID(),
+                        //Id = GetID(),
                         Degree = registerVM.Degree,
                         GPA = registerVM.GPA,
                         University_Id = registerVM.University_Id
                     };
                     myContext.Educations.Add(edu);
                     myContext.SaveChanges();    
-
 
                     Profiling prof = new Profiling
                     {
@@ -107,16 +109,16 @@ namespace API.Repository.Data
                 }
                 else
                 {
-                    return 5;
+                    return 6;
                 }
             }
             else if(emailExist == true && phoneExist == true)
             {
-                return 6;
+                return 7;
             }
             else
             {
-                return 4;
+                return 5;
             }
 
             var result = myContext.SaveChanges();
@@ -150,6 +152,22 @@ namespace API.Repository.Data
             }
         }
 
+        public bool HasFormatEmail(RegisterVM registerVM)
+        {
+            string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" +
+               @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" +
+               @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
+            var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+            if (!regex.IsMatch(registerVM.Email))
+            {
+                return true;
+            }   
+            else
+            {
+                return false;
+            }    
+        }
+
         public IEnumerable GetRegisteredData()
         {
 
@@ -170,7 +188,6 @@ namespace API.Repository.Data
                              GPA = edu.GPA,
                              UnivName = univ.Name
                          }).ToList();
-
             return result;
         }
     }

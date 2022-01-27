@@ -4,6 +4,7 @@ using API.Repository.Data;
 using API.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.Net;
 
@@ -13,10 +14,12 @@ namespace API.Controllers
     [ApiController]
     public class EmployeesController : BaseController <Employee, EmployeeRepository, string>
     {
-        private readonly EmployeeRepository employeeRepository; 
-        public EmployeesController(EmployeeRepository employeeRepository) : base(employeeRepository)
+        private readonly EmployeeRepository employeeRepository;
+        private readonly IConfiguration iConfiguration;
+        public EmployeesController(EmployeeRepository employeeRepository, IConfiguration iConfiguration) : base(employeeRepository)
         {
            this.employeeRepository = employeeRepository;    
+           this.iConfiguration = iConfiguration;    
         }
 
         [HttpPost("Register")]
@@ -25,15 +28,15 @@ namespace API.Controllers
             var result = employeeRepository.Register(registerVM);
             if (result != 0)
             {
-                if (result == 4)
+                if (result == 5)
                 {
                     return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "email is exist" });
                 }
-                else if (result == 5)
+                else if (result == 6)
                 {
                     return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "phone is exist" });
                 }
-                else if (result == 6)
+                else if (result == 7)
                 {
                     return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "email and phone are exist" });
                 }
@@ -46,9 +49,7 @@ namespace API.Controllers
             {
                 return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "Record failed to add" });
             }
-
         }
-
 
         [HttpGet("registeredData")]
         //[HttpGet]
