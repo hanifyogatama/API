@@ -158,14 +158,18 @@ namespace API.Repository.Data
 
         public int ChangePassword(string email, int otp, string newPassword, string confirmNewPassword)
         {
-            var emailCheck = myContext.Employees.Where(e => e.Email == email).SingleOrDefault();
-            var otpCheck = myContext.Accounts.Where(a => a.OTP == otp).Single();
-            var otpExpiryCheck = IsOTPExpired(otpCheck.ExpiredToken);
-            var accountCheck = myContext.Accounts.Where(a => a.OTP == otp).SingleOrDefault();
-            var confirmPasswordCheck = IsConfirmPassword(newPassword, confirmNewPassword) ;
-            var otpUsedCheck = IsOTPUsed(otpCheck.isUsed);
+           //var emailCheck = myContext.Employees.Where(e => e.Email == email).SingleOrDefault();
+           //var otpCheck2 = myContext.Accounts.Where(a => a.OTP == otp).SingleOrDefault();
 
-            if (otpCheck != null)
+            var acc = new Account();
+            var otpCheck = myContext.Accounts.Where(a => a.OTP == otp).Select(a => a.OTP).SingleOrDefault();
+            var otpExpiryCheck = IsOTPExpired(acc.ExpiredToken);
+            var accountCheck = myContext.Accounts.Where(a => a.OTP == otp).SingleOrDefault();
+            var confirmPasswordCheck = IsConfirmPassword(newPassword, confirmNewPassword);
+
+            var otpUsedCheck = IsOTPUsed(otpCheck);
+
+            if (otpCheck == otp)
             {
                 if(otpExpiryCheck == false)
                 {
@@ -187,7 +191,7 @@ namespace API.Repository.Data
                     }
                     else
                     {
-                        return 7; // wrong input belong new password and confirm new password
+                        return 7; // wrong input confirm new password
                     }
                 }
                 else
@@ -197,7 +201,7 @@ namespace API.Repository.Data
             }
             else
             {
-                return 9; // otp salah
+                return 9; // otp is wrong
             }
         }
 
@@ -215,6 +219,7 @@ namespace API.Repository.Data
 
         public bool IsConfirmPassword(string newPassword, string confirmPassword)
         {
+
             if(newPassword != confirmPassword)
             {
                 return true;
@@ -225,10 +230,11 @@ namespace API.Repository.Data
             }
         }
 
-        public bool IsOTPUsed(bool isUsed)
+        public bool IsOTPUsed(int OTP)
         {
-            var otpUsedCheck = myContext.Accounts.Where(a => a.isUsed == isUsed).Single();
-            if (otpUsedCheck != null)
+            var otpUsedCheck = myContext.Accounts.Where(a => a.OTP == OTP).Select(a => a.isUsed).SingleOrDefault();
+
+            if (otpUsedCheck != false)
             {
                 return true;
             }

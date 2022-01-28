@@ -85,7 +85,8 @@ namespace API.Controllers
         [HttpPost("ChangePassword")]
         public ActionResult<ChangePasswordVM> Post(ChangePasswordVM changePasswordMV)
         {
-            var changePassword = accountRepository.ChangePassword(changePasswordMV.Email, changePasswordMV.OTP, changePasswordMV.NewPassword, changePasswordMV.ConfirmPassword);
+            var changePassword = accountRepository.ChangePassword(changePasswordMV.Email, 
+                changePasswordMV.OTP, changePasswordMV.NewPassword, changePasswordMV.ConfirmPassword);
             if (changePassword != 0)
             {
                 if (changePassword == 5)
