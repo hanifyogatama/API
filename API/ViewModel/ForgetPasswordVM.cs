@@ -1,6 +1,6 @@
 ﻿namespace API.ViewModel
 {
-    public class ForgetPasswordMV
+    public class ForgetPasswordVM
     {
         public string Email { get; set; }    
     }

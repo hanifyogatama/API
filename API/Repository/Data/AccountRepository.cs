@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MailKit.Net.Smtp;
 using API.ViewModel;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Repository.Data
 {
@@ -24,9 +25,7 @@ namespace API.Repository.Data
         {
             try
             {
-                // var emailRegistered = myContext.Employees.Where(e => e.Email == inputEmail).SingleOrDefault();
-
-
+                //var emailRegistered = myContext.Employees.Where(e => e.Email == inputEmail).SingleOrDefault();
                 var emailRegistered = (from emp in myContext.Employees
                                           join ac in myContext.Accounts on emp.NIK equals ac.NIK
                                           where emp.Email == inputEmail
@@ -73,6 +72,8 @@ namespace API.Repository.Data
                            join pro in myContext.Profilings on acc.NIK equals pro.NIK
                            join edu in myContext.Educations on pro.Id equals edu.Id
                            join univ in myContext.Universities on edu.University_Id equals univ.Id
+                           join roleAcc in myContext.RoleAccounts on emp.NIK equals roleAcc.NIK
+                           join role in myContext.Roles on roleAcc.Id equals role.Id
                            where emp.Email == email
                            select new
                            {
@@ -84,51 +85,64 @@ namespace API.Repository.Data
                                Email = emp.Email,
                                Degree = edu.Degree,
                                GPA = edu.GPA,
-                               UnivName = univ.Name
+                               UnivName = univ.Name,
+                               RoleName = role.Name
                            }).ToList();
-
             return profile;
         }
 
         public int ForgotPassword(string email)
         {
-            //var emailRegistered = myContext.Employees.Where(e => e.Email == email).SingleOrDefault();
-            var sendingEmail = SendEmail(email);    
-            if(sendingEmail == true)
+            var emailRegistered = myContext.Employees.Where(e => e.Email == email).SingleOrDefault();
+
+            if(emailRegistered != null)
             {
-                return 2;
+                var sendingEmail = SendEmail(email, emailRegistered);
+                if (sendingEmail == true)
+                {
+                    return 2;
+                }
+                else
+                {
+                    return 3;
+                }
             }
             else
             {
-                return 3;
+                return 4;
             }
-          
         }
 
-        public bool SendEmail(string email)
+        public bool SendEmail(string email, Employee employeeNIK)
         {
             MimeMessage message = new MimeMessage();
             SmtpClient client = new SmtpClient();
             Random random = new Random();
+
+            var checkAccount = myContext.Accounts.Where(a => a.NIK == employeeNIK.NIK).SingleOrDefault();
             string otpRandomNumber = random.Next(0, 1000000).ToString("D6");
 
             try
             {
+                var timeExpiry = DateTime.Now.AddMinutes(5);
+                checkAccount.OTP = Convert.ToInt32(otpRandomNumber);
+                checkAccount.ExpiredToken = timeExpiry;
+                checkAccount.isUsed = false;
 
-                message.From.Add(new MailboxAddress("Demo Project", "hansdemoproject@gmail.com"));
+                myContext.Entry(checkAccount).State = EntityState.Modified;
+                myContext.SaveChanges();
+
+                message.From.Add(new MailboxAddress($"Reset Password {DateTime.Now.ToString("dddd, dd MMMM yyyy")}", "hansdemoproject@gmail.com"));
                 message.To.Add(MailboxAddress.Parse(email));
                 message.Subject = "Reset Password";
                 message.Body = new TextPart(TextFormat.Html)
                 {
-                    Text = $"<h2>Hello Buddy</h2>\nYour OTP number is {otpRandomNumber}"
+                    Text = $"<h2>Hello Buddy</h2> Your OTP number is <strong>{otpRandomNumber}</strong> </br></br> This OTP will expire on 5 minutes"
                 };
 
                 client.Connect("smtp.gmail.com", 465, true);
                 client.Authenticate("hansdemoproject@gmail.com", "HANSportfolio55");
                 client.Send(message);
-               /* client.Disconnect(true);
-                client.Dispose();*/
-
                 return true;    
             }
             catch (Exception)
@@ -137,11 +151,91 @@ namespace API.Repository.Data
             }
             finally
             {
-             
                 client.Disconnect(true);
                 client.Dispose();
             }
         }
 
+        public int ChangePassword(string email, int otp, string newPassword, string confirmNewPassword)
+        {
+            var emailCheck = myContext.Employees.Where(e => e.Email == email).SingleOrDefault();
+            var otpCheck = myContext.Accounts.Where(a => a.OTP == otp).Single();
+            var otpExpiryCheck = IsOTPExpired(otpCheck.ExpiredToken);
+            var accountCheck = myContext.Accounts.Where(a => a.OTP == otp).SingleOrDefault();
+            var confirmPasswordCheck = IsConfirmPassword(newPassword, confirmNewPassword) ;
+            var otpUsedCheck = IsOTPUsed(otpCheck.isUsed);
+
+            if (otpCheck != null)
+            {
+                if(otpExpiryCheck == false)
+                {
+                    if(confirmPasswordCheck == false)
+                    {
+                        if(otpUsedCheck == false)
+                        {
+                            accountCheck.Password = BCrypt.Net.BCrypt.HashPassword(newPassword);
+                            accountCheck.isUsed = true;
+
+                            myContext.Entry(accountCheck).State = EntityState.Modified;
+                            myContext.SaveChanges();
+                            return 5; // password has been changed
+                        }
+                        else
+                        {
+                            return 6; // is used
+                        }
+                    }
+                    else
+                    {
+                        return 7; // wrong input belong new password and confirm new password
+                    }
+                }
+                else
+                {
+                    return 8; // otp expired
+                }
+            }
+            else
+            {
+                return 9; // otp salah
+            }
+        }
+
+        public bool IsOTPExpired(DateTime expiryDate)
+        {
+            if (expiryDate < DateTime.Now)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool IsConfirmPassword(string newPassword, string confirmPassword)
+        {
+            if(newPassword != confirmPassword)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool IsOTPUsed(bool isUsed)
+        {
+            var otpUsedCheck = myContext.Accounts.Where(a => a.isUsed == isUsed).Single();
+            if (otpUsedCheck != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

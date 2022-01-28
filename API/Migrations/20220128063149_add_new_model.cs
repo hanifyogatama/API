@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace API.Migrations
 {
-    public partial class add_attribute_on_account_model : Migration
+    public partial class add_new_model : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,6 +23,19 @@ namespace API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TB_M_Employee", x => x.NIK);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TB_M_Role",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_M_Role", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -81,6 +94,30 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TB_M_RoleAccount",
+                columns: table => new
+                {
+                    NIK = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TB_M_RoleAccount", x => new { x.Id, x.NIK });
+                    table.ForeignKey(
+                        name: "FK_TB_M_RoleAccount_TB_M_Account_NIK",
+                        column: x => x.NIK,
+                        principalTable: "TB_M_Account",
+                        principalColumn: "NIK",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TB_M_RoleAccount_TB_M_Role_Id",
+                        column: x => x.Id,
+                        principalTable: "TB_M_Role",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TB_M_Profiling",
                 columns: table => new
                 {
@@ -113,6 +150,11 @@ namespace API.Migrations
                 name: "IX_TB_M_Profiling_Id",
                 table: "TB_M_Profiling",
                 column: "Id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TB_M_RoleAccount_NIK",
+                table: "TB_M_RoleAccount",
+                column: "NIK");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -121,16 +163,22 @@ namespace API.Migrations
                 name: "TB_M_Profiling");
 
             migrationBuilder.DropTable(
-                name: "TB_M_Account");
+                name: "TB_M_RoleAccount");
 
             migrationBuilder.DropTable(
                 name: "TB_M_Education");
 
             migrationBuilder.DropTable(
-                name: "TB_M_Employee");
+                name: "TB_M_Account");
+
+            migrationBuilder.DropTable(
+                name: "TB_M_Role");
 
             migrationBuilder.DropTable(
                 name: "TB_M_University");
+
+            migrationBuilder.DropTable(
+                name: "TB_M_Employee");
         }
     }
 }

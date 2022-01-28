@@ -32,7 +32,7 @@ namespace API.Controllers
                 else if(login == 2)
                 {
                     var getProfile = accountRepository.GetProfile(loginVM.Email);
-                    return Ok(getProfile);
+                    return StatusCode(200, new { status = HttpStatusCode.OK, getProfile, message = "login succesfully" });
                 }
                 else if (login == 3)
                 {
@@ -44,7 +44,7 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "Login is failed" });
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "login is failed" });
                 }
             }
             else
@@ -54,18 +54,22 @@ namespace API.Controllers
         }
 
         [HttpPost("ForgetPassword")]
-        public ActionResult<ForgetPasswordMV> Post(ForgetPasswordMV forgetPasswordMV)
+        public ActionResult<ForgetPasswordVM> Post(ForgetPasswordVM forgetPasswordMV)
         {
             var forgotPassword = accountRepository.ForgotPassword(forgetPasswordMV.Email);
             if (forgotPassword != 0)
             {
                 if (forgotPassword == 2)
                 {
-                    return StatusCode(200, new { status = HttpStatusCode.OK, message = "email sent" });
+                    return StatusCode(200, new { status = HttpStatusCode.OK, message = "email sent successfully" });
                 }
                 else if (forgotPassword == 3)
                 {
                     return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "email cannot send" });
+                }
+                else if (forgotPassword == 4)
+                {
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "email not registered" });
                 }
                 else
                 {
@@ -75,6 +79,43 @@ namespace API.Controllers
             else
             {
                 return StatusCode(500, new { status = HttpStatusCode.InternalServerError, message = "internal server error" });
+            }
+        }
+
+        [HttpPost("ChangePassword")]
+        public ActionResult<ChangePasswordVM> Post(ChangePasswordVM changePasswordMV)
+        {
+            var changePassword = accountRepository.ChangePassword(changePasswordMV.Email, changePasswordMV.OTP, changePasswordMV.NewPassword, changePasswordMV.ConfirmPassword);
+            if (changePassword != 0)
+            {
+                if (changePassword == 5)
+                {
+                    return StatusCode(200, new { status = HttpStatusCode.OK, message = "password has been changed" });
+                }
+                else if (changePassword == 6)
+                {
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "otp is used" });
+                }
+                else if (changePassword == 7)
+                {
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "wrong confirm password" });
+                }
+                else if (changePassword == 8)
+                {
+                    return StatusCode(400, new { status = HttpStatusCode.NotFound, message = "otp is expired" });
+                }
+                else if (changePassword == 9)
+                {
+                    return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "otp is wrong" });
+                }
+                else
+                {
+                    return StatusCode(505, new { status = HttpStatusCode.NotFound, message = "change password is failed" });
+                }
+            }
+            else
+            {
+                return StatusCode(500, new { status = HttpStatusCode.InternalServerError, message = "internal server error"});
             }
         }
     }

@@ -64,7 +64,6 @@ namespace API.Repository.Data
             var phoneExist = IsPhoneExist(registerVM);
             // var emailFormat = HasFormatEmail(registerVM);   
             
-
             if (emailExist == false)
             {
                 if (phoneExist == false)
@@ -91,7 +90,6 @@ namespace API.Repository.Data
 
                     Education edu = new Education
                     {
-                        //Id = GetID(),
                         Degree = registerVM.Degree,
                         GPA = registerVM.GPA,
                         University_Id = registerVM.University_Id
@@ -106,6 +104,12 @@ namespace API.Repository.Data
                     };
                     myContext.Profilings.Add(prof);
 
+                    RoleAccount roleAcc = new RoleAccount
+                    {
+                        NIK = employ.NIK,
+                        Id = 1
+                    };
+                    myContext.RoleAccounts.Add(roleAcc);
                 }
                 else
                 {
@@ -124,7 +128,6 @@ namespace API.Repository.Data
             var result = myContext.SaveChanges();
             return result;
         }
-
 
         public bool IsEmailExist(RegisterVM registerVM)
         {
@@ -167,15 +170,15 @@ namespace API.Repository.Data
                 return false;
             }    
         }
-
         public IEnumerable GetRegisteredData()
         {
-
             var result = (from emp in myContext.Employees
                          join acc in myContext.Accounts on emp.NIK equals acc.NIK
                          join pro in myContext.Profilings on acc.NIK equals pro.NIK
                          join edu in myContext.Educations on pro.Id equals edu.Id
                          join univ in myContext.Universities on edu.University_Id equals univ.Id
+                         join roleAcc in myContext.RoleAccounts on emp.NIK equals roleAcc.NIK   
+                         join role in myContext.Roles on roleAcc.Id equals role.Id   
                          select new
                          {
                              NIK = emp.NIK,
@@ -186,7 +189,8 @@ namespace API.Repository.Data
                              Email = emp.Email,
                              Degree = edu.Degree,
                              GPA = edu.GPA,
-                             UnivName = univ.Name
+                             UnivName = univ.Name,
+                             RoleName = role.Name
                          }).ToList();
             return result;
         }

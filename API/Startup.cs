@@ -33,6 +33,7 @@ namespace API
             services.AddScoped<EmployeeRepository>();
             services.AddScoped<AccountRepository>();
             services.AddScoped<UniversityRepository>();
+            services.AddScoped<RoleRepository>();
             
             // Dependency Injection
             // services.AddControllersWithViews();

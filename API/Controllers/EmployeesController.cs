@@ -42,12 +42,12 @@ namespace API.Controllers
                 }
                 else
                 {
-                    return StatusCode(200, new { status = HttpStatusCode.OK, message = "data has been added" });
+                    return StatusCode(200, new { status = HttpStatusCode.OK, message = "account registration successful" });
                 }
             }
             else
             {
-                return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "Record failed to add" });
+                return StatusCode(400, new { status = HttpStatusCode.BadRequest, message = "failed" });
             }
         }
 

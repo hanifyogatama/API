@@ -12,6 +12,8 @@ namespace API.Context
         public DbSet<Education> Educations { get; set; }
         public DbSet<University> Universities { get; set; }
         public DbSet<Profiling> Profilings { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<RoleAccount> RoleAccounts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,6 +34,22 @@ namespace API.Context
             modelBuilder.Entity<Education>()
                 .HasOne(ed => ed.University)
                 .WithMany(u => u.Educations);
+
+            // many to many
+            
+            modelBuilder.Entity<RoleAccount>()
+                .HasKey(ra => new { ra.Id, ra.NIK });
+
+            modelBuilder.Entity<RoleAccount>()
+                .HasOne(ra => ra.Accounts)
+                .WithMany(a => a.RoleAccounts)
+                .HasForeignKey(ra => ra.NIK);
+
+            modelBuilder.Entity<RoleAccount>()
+                .HasOne(ra => ra.Roles)
+                .WithMany(r => r.RoleAccounts)
+                .HasForeignKey(ra => ra.Id);
+
         }
     }
 }
