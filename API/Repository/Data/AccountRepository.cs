@@ -158,8 +158,6 @@ namespace API.Repository.Data
 
         public int ChangePassword(string email, int otp, string newPassword, string confirmNewPassword)
         {
-           //var emailCheck = myContext.Employees.Where(e => e.Email == email).SingleOrDefault();
-           //var otpCheck2 = myContext.Accounts.Where(a => a.OTP == otp).SingleOrDefault();
 
             var acc = new Account();
             var otpCheck = myContext.Accounts.Where(a => a.OTP == otp).Select(a => a.OTP).SingleOrDefault();
@@ -243,5 +241,33 @@ namespace API.Repository.Data
                 return false;
             }
         }
+
+        public string GetUserRole(string email, string role)
+        {
+
+            // var getNik = myContext.Employees.Where(e => e.Email == email).Select(a => a.NIK).SingleOrDefault();
+            // var roleUser = myContext.RoleAccounts.Where(ra => ra.NIK == getNik).Select(ra => ra.Roles).SingleOrDefault();
+
+            var result = (from emp in myContext.Employees
+                          join ra in myContext.RoleAccounts on emp.NIK equals ra.NIK
+                          join r in myContext.Roles on ra.Id equals r.Id
+                          where emp.Email == email && r.Name == role
+                          select new
+                          {
+                             RoleName = r.Name
+                          }).ToString();
+            return result;
+        }
+
+
+       /* public int SignManager(string key)
+        {
+            var roleAccount = new RoleAccount();
+            roleAccount.NIK = key;
+            roleAccount.Id = 2;
+            myContext.Add(roleAccount);
+            var result = myContext.SaveChanges();
+            return result;
+        }*/
     }
 }
