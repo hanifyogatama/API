@@ -42,24 +42,19 @@ namespace API.Controllers
                 }
                 else if(login == 2)
                 {
-                    // var getProfile = accountRepository.GetProfile(loginVM.Email);
-                    
-
                     // get role from query email and role
-                    var getUserName = accountRepository.GetUserRole(loginVM.Email, loginVM.RoleName);
+                    var getUserName = accountRepository.GetUserRole(loginVM);
 
-
-                    var data = new LoginDataVM()
-                    {
-                        Email = getUserName,
-                        Role = getUserName,
-                    };
-
+                    // payload 
                     var claims = new List<Claim>
                     {
-                        new Claim("email", data.Email),
-                        new Claim("role", data.Role)
+                        new Claim("email", loginVM.Email),
                     };
+
+                    foreach(var role in getUserName)
+                    {
+                        claims.Add(new Claim("roles", role.ToString()));
+                    }
 
                     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                     var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); // header
@@ -168,11 +163,6 @@ namespace API.Controllers
         public ActionResult TestJWT()
         {
             return Ok("test JWT Success");
-        }
-
-        // [Route("SignManager/{key}")]
-        // public ActionResult SignManager()
-        
-        
+        }        
     }
 }

@@ -170,6 +170,7 @@ namespace API.Repository.Data
                 return false;
             }    
         }
+
         public IEnumerable GetRegisteredData()
         {
             var result = (from emp in myContext.Employees

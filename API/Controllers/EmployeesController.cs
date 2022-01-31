@@ -5,6 +5,7 @@ using API.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using System.Net;
 
@@ -51,6 +52,7 @@ namespace API.Controllers
             }
         }
 
+        [Authorize(Roles = "Director, Manager")]
         [HttpGet("registeredData")]
         //[HttpGet]
         public ActionResult GetRegisteredData()
