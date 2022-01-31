@@ -21,6 +21,7 @@ namespace API.Repository.Data
             var roleAccount = new RoleAccount();
             roleAccount.NIK = getNik.NIK;
             roleAccount.Id = 2;
+
             myContext.Add(roleAccount);
             var result = myContext.SaveChanges();
             return result;

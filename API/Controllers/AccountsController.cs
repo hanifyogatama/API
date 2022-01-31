@@ -1,4 +1,5 @@
 ﻿using API.Base;
+using API.Context;
 using API.Models;
 using API.Repository.Data;
 using API.ViewModel;
@@ -10,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -22,12 +24,15 @@ namespace API.Controllers
     {
         private readonly IConfiguration _configuration;
 
+        private readonly MyContext myContext;
+
         private readonly AccountRepository accountRepository;
 
-        public AccountsController(AccountRepository accountRepository, IConfiguration configuration) : base(accountRepository)
+        public AccountsController(AccountRepository accountRepository, IConfiguration configuration, MyContext myContext) : base(accountRepository)
         {
             this.accountRepository = accountRepository;
             this._configuration = configuration;
+            this.myContext = myContext;
         }
 
         [HttpPost("Login")]
@@ -43,20 +48,51 @@ namespace API.Controllers
                 else if(login == 2)
                 {
                     // get role from query email and role
-                    var getUserName = accountRepository.GetUserRole(loginVM);
+                    var getUserRole = accountRepository.GetUserRole(loginVM);
+                    var getUserData = myContext.Employees.Where(e => e.Email == loginVM.Email).FirstOrDefault();
+                    var account = myContext.Accounts.Where(a => a.NIK == getUserData.NIK).FirstOrDefault();
+                    var role = myContext.Roles.Where(r => r.RoleAccounts.Any(ra => ra.Accounts.NIK == getUserData.NIK)).ToList();
+
+                    var claims = new ClaimsIdentity(new Claim[]
+                    {
+                        new Claim(ClaimTypes.Email, getUserData.Email)
+                    });
+
+                    foreach (var item in role)
+                    {
+                        claims.AddClaim(new Claim(ClaimTypes.Role, item.Name));
+                    }
+
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var tokenKey = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+                    var tokenDescriptor = new SecurityTokenDescriptor
+                    {
+                        Subject = claims,
+                        Expires = DateTime.UtcNow.AddMinutes(10),
+                        SigningCredentials = new SigningCredentials
+                        (
+                            new SymmetricSecurityKey(tokenKey),
+                            SecurityAlgorithms.HmacSha256Signature
+                        )
+
+                    };
+
+                    var token = tokenHandler.CreateToken(tokenDescriptor);
+                    var idToken = tokenHandler.WriteToken(token);   
+                    
 
                     // payload 
-                    var claims = new List<Claim>
+                   /* var claims = new List<Claim>
                     {
                         new Claim("email", loginVM.Email),
                     };
 
-                    foreach(var role in getUserName)
+                    foreach(var role in getUserRole)
                     {
                         claims.Add(new Claim("roles", role.ToString()));
-                    }
+                    }*/
 
-                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                    /*var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                     var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); // header
                     var token = new JwtSecurityToken(
                               _configuration["Jwt:Issuer"],
@@ -66,7 +102,7 @@ namespace API.Controllers
                               signingCredentials: signIn );
 
                     var idToken = new JwtSecurityTokenHandler().WriteToken(token); // generate token
-                    claims.Add(new Claim("TokenSecurity", idToken.ToString()));
+                    claims.Add(new Claim("TokenSecurity", idToken.ToString()));*/
 
 
                     return StatusCode(200, new { status = HttpStatusCode.OK, idToken, message = "login succesfully" });
