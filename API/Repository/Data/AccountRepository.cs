@@ -244,17 +244,16 @@ namespace API.Repository.Data
 
         public string[] GetUserRole(LoginVM loginVM)  
         {
-
             var userNik = myContext.Employees.Where(e => e.Email == loginVM.Email).Select(a => a.NIK).SingleOrDefault();
             var userRole = myContext.RoleAccounts.Where(ra => ra.NIK == userNik).ToList();
 
-            var result = new List<String>();
-            foreach (var a in userRole)
+            var roles = new List<String>();
+            foreach (var ur in userRole)
             {
-                result.Add(myContext.Roles.Where(r => r.Id == a.Id).Single().Name);  
+                roles.Add(myContext.Roles.Where(r => r.Id == ur.Id).Single().Name);  
             }
 
-            return result.ToArray();  
+            return roles.ToArray();  
         }
     }
 }

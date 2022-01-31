@@ -1,8 +1,8 @@
 ﻿using API.Base;
 using API.Models;
 using API.Repository.Data;
+using API.ViewModel;
 using Microsoft.AspNetCore.Authorization;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -23,11 +23,10 @@ namespace API.Controllers
         }
 
         [Authorize(Roles = "Director")]
-        [HttpPost("SignManager/{Key}")]
-        
-        public ActionResult SignManager(string key)
+        [HttpPost("SignManager")]
+        public ActionResult SignManager(AccountRoleVM accountRoleVM)
         {
-            var result = accountRoleRepository.SignManager(key);
+            var result = accountRoleRepository.SignManager(accountRoleVM);
             if(result != 0)
             {
                 return StatusCode(200, new { status = HttpStatusCode.OK, result, message = "role has been changed to manager" });

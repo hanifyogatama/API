@@ -1,5 +1,7 @@
 ﻿using API.Context;
 using API.Models;
+using API.ViewModel;
+using System.Linq;
 
 namespace API.Repository.Data
 {
@@ -12,10 +14,12 @@ namespace API.Repository.Data
             this.myContext = myContext;
         }
 
-        public int SignManager(string key)
+        public int SignManager(AccountRoleVM accountRoleVM)
         {
+            var getNik = myContext.Employees.Where(e => e.NIK == accountRoleVM.NIK).SingleOrDefault();
+
             var roleAccount = new RoleAccount();
-            roleAccount.NIK = key;
+            roleAccount.NIK = getNik.NIK;
             roleAccount.Id = 2;
             myContext.Add(roleAccount);
             var result = myContext.SaveChanges();
