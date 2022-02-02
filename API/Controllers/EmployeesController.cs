@@ -67,6 +67,15 @@ namespace API.Controllers
                 return StatusCode(400, new { status = HttpStatusCode.BadRequest,result, message = "Record is empty" });
             }
         }
+
+
+        [HttpGet("TestCORS")]
+        public ActionResult TestCORS()
+        {
+            return Ok("test cors berhasil");
+        }
+
+
     }
 }
 
