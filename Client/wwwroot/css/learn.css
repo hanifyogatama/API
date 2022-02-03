@@ -1,0 +1,14 @@
+﻿*{
+    border: 2px solid #808080;
+    margin: 15px;
+    padding: 15px;
+}
+
+body {
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+section#b li:nth-child(4) {
+    background-color: aquamarine;
+}
