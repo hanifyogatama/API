@@ -13,5 +13,10 @@ namespace Client.Controllers
         {
             return View();
         }
+
+        public IActionResult StarWars()
+        {
+            return View();
+        }
     }
 }
