@@ -1,0 +1,92 @@
+﻿@{
+   ViewData["Title"] = "Form Validate";
+   Layout = "_LayoutBootGrid";
+}
+ 
+<div class="container mt-5">
+    <div class="card border-dark">
+        <div class="card-header">Form</div>
+        <div class="card-body">
+            <form id="myForm">
+         <div class="row">
+              <div class="col-md-8">
+                  <div class="row">
+                    <div class="col">
+                      <label for="">First Name</label>
+                      <input type="text" name="firstName" class="form-control" autocomplete="off" required>
+                    </div>
+                    <div class="col">
+                      <label for="">Last Name</label>
+                      <input type="text" name="lastName" class="form-control" autocomplete="off" required>
+                    </div>
+                  </div>
+          <div class="form-group mt-3">
+            <label for="exampleInputEmail1">Email</label>
+            <input type="email" class="form-control" name="email" id="exampleInputEmail1" autocomplete="off" required>
+          </div>
+          <div class="row">
+                    <div class="col">
+                      <label for="exampleInputEmail1">Password</label>
+                      <input type="password" id="password" name="password" class="form-control" autocomplete="off" required>
+                    </div>
+                    <div class="col">
+                      <label for="exampleInputEmail1">Confirm Password</label>
+                      <input type="password" id="confirm_password" name="confirm_password" class="form-control" autocomplete="off">
+                    </div>
+           </div>
+          <label class="mt-3">Your Skill(s)</label>
+                    <div class="row">
+                        <div class="col-md">
+                             <div class="form-check">
+                                  <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" value="">Hunting
+                                  </label>
+                            </div>
+                            <div class="form-check">
+                              <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" value="">Shooting
+                              </label>
+                          </div>
+                        </div>
+                         <div class="col-md">
+                             <div class="form-check">
+                                  <label class="form-check-label">
+                                    <input type="checkbox" class="form-check-input" value="">Driving
+                                  </label>
+                            </div>
+                            <div class="form-check">
+                              <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" value="">Stub
+                              </label>
+                          </div>
+                        </div>
+                    </div>
+          
+          <label class="mt-3">Gender</label></br>
+          <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+              <label class="form-check-label" for="inlineRadio1">Male</label>
+          </div>
+          <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+              <label class="form-check-label" for="inlineRadio2">Female</label>
+          </div>
+              </div>
+              <div class="col-md-4">
+                  <label>Photo</label>
+                   <div class="">
+                        <img width="400" src="https://www.giantfreakinrobot.com/wp-content/uploads/2020/12/the-mandalorian-din-djarin-900x506.jpg" class="img-thumbnail">
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                    </div>
+              </div>
+          </div>
+          <label  class="mt-3">Birth Date</label>
+          <input id="datepicker" width="276" />
+            <button type="submit" class="btn btn-primary float-right">Submit</button>
+        </form>
+        </div>
+    </div>
+</div>
+<br>

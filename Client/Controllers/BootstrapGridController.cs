@@ -18,5 +18,21 @@ namespace Client.Controllers
         {
             return View();
         }
+        public IActionResult FormValidate()
+        {
+            return View();
+        }
+        public IActionResult DataTables()
+        {
+            return View();
+        }
+        public IActionResult Chart()
+        {
+            return View();
+        }
+        public IActionResult Covid()
+        {
+            return View();
+        }
     }
 }

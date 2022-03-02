@@ -51,7 +51,7 @@ namespace API.Repository
         {
             return entities.Find(key);
         }
-
+            
         public int Insert(Entity entity)
         {
             entities.Add(entity);

@@ -49,7 +49,7 @@ namespace API.Controllers
                 {
                     // get role from query email and role
                     var getUserRole = accountRepository.GetUserRole(loginVM);
-                    var getUserData = myContext.Employees.Where(e => e.Email == loginVM.Email).FirstOrDefault();
+                    /*var getUserData = myContext.Employees.Where(e => e.Email == loginVM.Email).FirstOrDefault();
                     var account = myContext.Accounts.Where(a => a.NIK == getUserData.NIK).FirstOrDefault();
                     var role = myContext.Roles.Where(r => r.RoleAccounts.Any(ra => ra.Accounts.NIK == getUserData.NIK)).ToList();
 
@@ -78,31 +78,31 @@ namespace API.Controllers
                     };
 
                     var token = tokenHandler.CreateToken(tokenDescriptor);
-                    var idToken = tokenHandler.WriteToken(token);   
-                    
+                    var idToken = tokenHandler.WriteToken(token);*/
+
 
                     // payload 
-                   /* var claims = new List<Claim>
+                    var claims = new List<Claim>
                     {
                         new Claim("email", loginVM.Email),
                     };
 
-                    foreach(var role in getUserRole)
+                    foreach (var role in getUserRole)
                     {
                         claims.Add(new Claim("roles", role.ToString()));
-                    }*/
+                    }
 
-                    /*var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+                    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
                     var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); // header
                     var token = new JwtSecurityToken(
                               _configuration["Jwt:Issuer"],
                               _configuration["Jwt:Audience"],
                               claims,
-                              expires: DateTime.UtcNow.AddMinutes(10), // set time expired
-                              signingCredentials: signIn );
+                              expires: DateTime.UtcNow.AddMinutes(50), // set time expired
+                              signingCredentials: signIn);
 
                     var idToken = new JwtSecurityTokenHandler().WriteToken(token); // generate token
-                    claims.Add(new Claim("TokenSecurity", idToken.ToString()));*/
+                    claims.Add(new Claim("TokenSecurity", idToken.ToString()));
 
 
                     return StatusCode(200, new { status = HttpStatusCode.OK, idToken, message = "login succesfully" });

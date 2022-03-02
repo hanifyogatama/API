@@ -195,5 +195,38 @@ namespace API.Repository.Data
                          }).ToList();
             return result;
         }
+
+        public IEnumerable GetGender()
+        {
+            var genders = (from emp in myContext.Employees
+                          group emp by emp.Gender into gndr
+                          select new
+                          {
+                              gender = gndr.Key
+                          }).ToList();                      
+            return genders;
+        }
+
+        public IEnumerable GetGenerateNIK()
+        {
+            string nikMax = myContext.Employees.Max(e => e.NIK);
+            var nikMaxList = new List<GenerateNIK>
+            {
+                new GenerateNIK
+                {
+                    value = GetNIK()
+                }
+            };
+
+            return nikMaxList;
+        }
+
+
+        public class GenerateNIK
+        {
+            public string value { get; set; }
+        }
+
+        
     }
 }

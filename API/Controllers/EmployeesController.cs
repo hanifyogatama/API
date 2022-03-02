@@ -52,7 +52,7 @@ namespace API.Controllers
             }
         }
 
-        [Authorize(Roles = "Director, Manager")]
+        /*[Authorize(Roles = "Director, Manager")]*/
         [HttpGet("registeredData")]
         //[HttpGet]
         public ActionResult GetRegisteredData()
@@ -69,11 +69,25 @@ namespace API.Controllers
         }
 
 
-        [HttpGet("TestCORS")]
+        [HttpGet("gender")]
+        public ActionResult Gender()
+        {
+            var result = employeeRepository.GetGender();    
+            return Ok(result);
+        }
+
+        [HttpGet("generateNik")]
+        public ActionResult GenerateNik()
+        {
+            var result = employeeRepository.GetGenerateNIK();
+            return Ok(result);
+        }
+
+        /*[HttpGet("TestCORS")]
         public ActionResult TestCORS()
         {
             return Ok("test cors berhasil");
-        }
+        }*/
 
 
     }

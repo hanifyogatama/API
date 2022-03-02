@@ -36,6 +36,7 @@ namespace API
             services.AddControllers();
             services.AddScoped<EmployeeRepository>();
             services.AddScoped<AccountRepository>();
+            services.AddScoped<EducationRepository>();
             services.AddScoped<UniversityRepository>();
             services.AddScoped<RoleRepository>();
             services.AddScoped<AccountRoleRepository>();
@@ -88,7 +89,8 @@ namespace API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(options => options.AllowAnyOrigin());
+            // app.UseCors(options => options.AllowAnyOrigin());
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseHttpsRedirection();
 

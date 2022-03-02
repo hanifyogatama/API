@@ -1,0 +1,91 @@
+﻿@{
+   ViewData["Title"] = "Covid";
+   Layout = "_LayoutBootGrid";
+}
+<div class="container mt-5">
+    <div class="row row-cols-1 row-cols-md-3 covidData">
+          
+  
+</div>
+</div>
+
+<script>
+     $.ajax({
+        url: "https://covid19.mathdro.id/api",
+        success: function (result) {
+            console.log(result);
+                var text="";
+            
+                text += `
+                     <div class="col mb-4">
+                        <div class="card shadow">
+                          <div class="card-body text-monospace">
+                            <h5 class="card-title">Confirmed</h5>
+                            <h1 class="card-text text-info">${result.confirmed.value}</h1>
+                          </div>
+                          <div class="card-footer"> 
+                             <button class= "btn btn-primary" onclick="detailPoke('${result.confirmed.detail}')" data-toggle="modal" data-target="#exampleModal">Detail</bottom>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col mb-4">
+                        <div class="card shadow">
+                          <div class="card-body text-monospace"">
+                            <h5 class="card-title">Recovered</h5>
+                            <h1 class="card-text text-success">${result.recovered.value}</h1>
+                          </div>
+                           <div class="card-footer"> 
+                             <button class= "btn btn-primary" onclick="detailPoke('${result.recovered.detail}')" data-toggle="modal" data-target="#exampleModal">Detail</bottom>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col mb-4">
+                        <div class="card shadow">
+                          <div class="card-body text-monospace"">
+                            <h5 class="card-title">Deaths</h5>
+                            <h1 class="card-text text-danger">${result.deaths.value}</h1>
+                          </div>
+                           <div class="card-footer"> 
+                             <button class= "btn btn-primary" onclick="detailPoke('${result.deaths.detail}')" data-toggle="modal" data-target="#exampleModal">Detail</bottom>
+                          </div>
+                        </div>
+                      </div>
+                `;
+            
+            console.log(text);
+            $('.covidData').html(text);
+        }
+    })
+
+
+    const counters = document.querySelectorAll('.counter');
+const speed = 200; // The lower the slower
+
+counters.forEach(counter => {
+	const updateCount = () => {
+		const target = +counter.getAttribute('data-target');
+		const count = +counter.innerText;
+
+		// Lower inc to slow and higher to slow
+		const inc = target / speed;
+
+		// console.log(inc);
+		// console.log(count);
+
+		// Check if target is reached
+		if (count < target) {
+			// Add inc to count and output in counter
+			counter.innerText = count + inc;
+			// Call function every ms
+			setTimeout(updateCount, 1);
+		} else {
+			counter.innerText = target;
+		}
+	};
+
+	updateCount();
+});
+
+</script>
